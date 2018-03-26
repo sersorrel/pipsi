@@ -301,8 +301,13 @@ class Repo(object):
 
     def get_package_info(self, venv_path):
         package_info_file_path = join(venv_path, 'package_info.json')
-        with open(package_info_file_path, 'r') as fh:
-            return json.load(fh)
+        try:
+            with open(package_info_file_path, 'r') as fh:
+                return json.load(fh)
+        except FileNotFoundError:
+            click.echo("No package_info.json available for virtualenv at {}!".format(venv_path))
+            click.echo("The virtualenv is corrupt, you should reinstall the package.")
+            return {}
 
     def install(self, package, python=None, editable=False, system_site_packages=False, pre=False):
         # `python` could be int as major version, or str as absolute bin path,
