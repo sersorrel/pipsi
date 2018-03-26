@@ -304,7 +304,7 @@ class Repo(object):
         with open(package_info_file_path, 'r') as fh:
             return json.load(fh)
 
-    def install(self, package, python=None, editable=False, system_site_packages=False):
+    def install(self, package, python=None, editable=False, system_site_packages=False, pre=False):
         # `python` could be int as major version, or str as absolute bin path,
         # if it's int, then we will try to find the executable `python2` or `python3` in PATH
         if isinstance(python, int):
@@ -346,6 +346,9 @@ class Repo(object):
 
         if system_site_packages:
             args.append('--system-site-packages')
+
+        if pre:
+            install_args.append('--pre')
 
         try:
             debugp('Popen: {}'.format(args))
@@ -474,8 +477,10 @@ def cli(ctx, home, bin_dir):
 @click.option('--system-site-packages', is_flag=True,
               help='Give the virtual environment access to the global '
                    'site-packages.')
+@click.option('--pre', is_flag=True,
+              help='Install prerelease packages.')
 @click.pass_obj
-def install(repo, package, python, editable, system_site_packages):
+def install(repo, package, python, editable, system_site_packages, pre):
     """Installs scripts from a Python package.
 
     Given a package this will install all the scripts and their dependencies
@@ -484,7 +489,7 @@ def install(repo, package, python, editable, system_site_packages):
     """
     if re.search(r'^\d$', python):
         python = int(python)
-    if repo.install(package, python, editable, system_site_packages):
+    if repo.install(package, python, editable, system_site_packages, pre):
         click.echo('Done.')
     else:
         sys.exit(1)
