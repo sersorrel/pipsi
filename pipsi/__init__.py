@@ -395,7 +395,7 @@ class Repo(object):
         paths.extend(self.get_package_scripts(path))
         return UninstallInfo(package, paths)
 
-    def upgrade(self, package, editable=False):
+    def upgrade(self, package, editable=False, pre=False):
         package, install_args = self.resolve_package(package)
 
         venv_path = self.get_package_path(package)
@@ -411,6 +411,8 @@ class Repo(object):
                 '--upgrade']
         if editable:
             args.append('--editable')
+        if pre:
+            args.append('--pre')
 
         if Popen(args + install_args).wait() != 0:
             click.echo('Failed to upgrade through pip.  Aborting.')
@@ -505,10 +507,12 @@ def install(repo, package, python, editable, system_site_packages, pre):
 @click.option('--editable', '-e', is_flag=True,
               help='Enable editable installation.  This only works for '
                    'locally installed packages.')
+@click.option('--pre', is_flag=True,
+              help='Install prerelease packages.')
 @click.pass_obj
-def upgrade(repo, package, editable):
+def upgrade(repo, package, editable, pre):
     """Upgrades an already installed package."""
-    if repo.upgrade(package, editable):
+    if repo.upgrade(package, editable, pre):
         click.echo('Done.')
     else:
         sys.exit(1)
