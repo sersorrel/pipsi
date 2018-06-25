@@ -408,7 +408,7 @@ class Repo(object):
         old_scripts = set(self.get_package_scripts(venv_path))
 
         args = [os.path.join(venv_path, BIN_DIR, 'python'), '-m', 'pip', 'install',
-                '--upgrade']
+                '--upgrade', '--upgrade-strategy', 'eager']
         if editable:
             args.append('--editable')
         if pre:
