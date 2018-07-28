@@ -361,6 +361,15 @@ class Repo(object):
                 click.echo('Failed to create virtualenv.  Aborting.')
                 return _cleanup()
 
+            args = [
+                os.path.join(venv_path, BIN_DIR, 'python'), '-m', 'pip',
+                'install', '-U', 'pip', 'setuptools', 'wheel'
+            ]
+            debugp('Popen: {}'.format(args))
+            if Popen(args).wait() != 0:
+                click.echo('Failed to upgrade initial packages.  Aborting.')
+                return _cleanup()
+
             args = [os.path.join(venv_path, BIN_DIR, 'python'), '-m', 'pip', 'install']
             if editable:
                 args.append('--editable')
