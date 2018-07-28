@@ -95,6 +95,10 @@ def install_files(venv, bin_dir, install):
         _cleanup()
         fail('Could not create virtualenv for pipsi :(')
 
+    if call([venv + PIP, 'install', '-U', 'pip', 'setuptools', 'wheel']) != 0:
+        _cleanup()
+        fail('Could not upgrade virtualenv :(')
+
     if call([venv + PIP, 'install', install]) != 0:
         _cleanup()
         fail('Could not install pipsi :(')
