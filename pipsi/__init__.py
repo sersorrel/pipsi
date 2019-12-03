@@ -390,10 +390,10 @@ class Repo(object):
 
         self.save_package_info(venv_path, package, linked_scripts)
 
-        # We did not link any, rollback.
+        # We did not link any.
         if not linked_scripts:
-            click.echo('Did not find any scripts.  Uninstalling.')
-            return _cleanup()
+            click.echo('Did not find any scripts.  Remember to uninstall if you didn\'t want to install a library.')
+            return False
         return True
 
     def uninstall(self, package):
